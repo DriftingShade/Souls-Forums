@@ -19,20 +19,20 @@ class Thread:
     def form_is_valid(form_data):
         is_valid = True
 
-        if len(form_data["title"]) == 0:
+        if len(form_data["title"].strip()) == 0:
             flash("Please enter title.")
             is_valid = False
-        elif len(form_data["title"]) < 5:
+        elif len(form_data["title"].strip()) < 5:
             flash("Title must be at least five characters.")
             is_valid = False
-        elif len(form_data["title"]) > 60:
+        elif len(form_data["title"].strip()) > 60:
             flash("Title must be less than 60 characters.")
             is_valid = False
 
-        if len(form_data["content"]) == 0:
+        if len(form_data["content"].strip()) == 0:
             flash("Please enter content.")
             is_valid = False
-        elif len(form_data["content"]) < 10:
+        elif len(form_data["content"].strip()) < 10:
             flash("Content must be at least 10 characters.")
             is_valid = False
 
@@ -125,6 +125,8 @@ class Thread:
         SET
         title=%(title)s,
         content=%(content)s,
+        user_id=%(user_id)s,
+        updated_at=NOW()
         WHERE id = %(thread_id)s;"""
         connectToMySQL(Thread.DB).query_db(query, form_data)
         return

@@ -69,17 +69,23 @@ def edit_thread(thread_id):
     return render_template("edit_thread.html", thread=thread, user=user)
 
 
-@app.post("/threads/update")
-def update_thread():
+@app.post("/threads/<int:thread_id>/update")
+def update_thread(thread_id):
     if "user_id" not in session:
         flash("Please log in.", "login")
         return redirect("/")
 
-    thread_id = request.form["thread_id"]
     if not Thread.form_is_valid(request.form):
         return redirect(f"/threads/{thread_id}/edit")
 
-    Thread.update(request.form)
+    form_data = {
+        "title": request.form["title"],
+        "content": request.form["content"],
+        "user_id": session["user_id"],
+        "thread_id": thread_id,
+    }
+
+    Thread.update(form_data)
     return redirect(f"/threads/{thread_id}")
 
 
