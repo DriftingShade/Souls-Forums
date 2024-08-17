@@ -48,7 +48,7 @@ class Thread:
             thread = Thread(each_dict)
             threads.append(thread)
         return threads
-    
+
     @classmethod
     def find_all_with_users(cls):
         query = """SELECT * FROM threads JOIN users ON threads.user_id = users.id"""
@@ -59,20 +59,20 @@ class Thread:
         for each_dict in list_of_dicts:
             thread = Thread(each_dict)
             user_data = {
-                "id": each_dict["threads.id"],
+                "id": each_dict["users.id"],
                 "first_name": each_dict["first_name"],
                 "last_name": each_dict["last_name"],
                 "username": each_dict["username"],
                 "email": each_dict["email"],
                 "password": each_dict["password"],
-                "created_at": each_dict["threads.created_at"],
-                "updated_at": each_dict["threads.updated_at"],
+                "created_at": each_dict["users.created_at"],
+                "updated_at": each_dict["users.updated_at"],
             }
             user = User(user_data)
             thread.user = user
             threads.append(thread)
         return threads
-    
+
     @classmethod
     def find_by_id(cls, thread_id):
         query = """SELECT * FROM threads WHERE id = %(thread_id)s"""
@@ -81,10 +81,10 @@ class Thread:
 
         if len(list_of_dicts) == 0:
             return None
-        
+
         thread = Thread(list_of_dicts[0])
         return thread
-    
+
     @classmethod
     def find_by_id_with_user(cls, thread_id):
         query = """SELECT * FROM threads JOIN users ON threads.user_id = users.id 
@@ -95,7 +95,7 @@ class Thread:
 
         if len(list_of_dicts) == 0:
             return None
-        
+
         thread = Thread(list_of_dicts[0])
         user_data = {
             "id": list_of_dicts[0]["users.id"],
@@ -109,16 +109,16 @@ class Thread:
         }
         thread.user = User(user_data)
         return thread
-    
+
     @classmethod
     def create(cls, form_data):
         query = """INSERT INTO threads
-        (title, content, user_id)
+        (title, content, user_id, created_at, updated_at)
         VALUES
-        (%(title)s, %(content)s, %(user_id)s,)"""
+        (%(title)s, %(content)s, %(user_id)s, NOW(), NOW());"""
         thread_id = connectToMySQL(Thread.DB).query_db(query, form_data)
         return thread_id
-    
+
     @classmethod
     def update(cls, form_data):
         query = """UPDATE threads
@@ -128,7 +128,7 @@ class Thread:
         WHERE id = %(thread_id)s;"""
         connectToMySQL(Thread.DB).query_db(query, form_data)
         return
-    
+
     @classmethod
     def delete_by_id(cls, thread_id):
         query = """DELETE FROM threads WHERE id = %(thread_id)s;"""

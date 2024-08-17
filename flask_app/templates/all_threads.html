@@ -12,14 +12,60 @@
     />
   </head>
   <body>
-    <nav class="navbar bg-body-primary">
-      <div class="container-fluid">
-        <h1 class="text-center">Welcome, {{user.username}}!</h1>
-        <form class="d-flex" role="logout" action="/users/logout">
-          <button class="btn btn-outline-success" type="submit">Log Out</button>
-        </form>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container">
+        <h3>Welcome, {{ user.username }}!</h3>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="btn btn-primary mx-2" aria-current="page" href="/threads/new">Create A Thread</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-primary mx-3" aria-current="page" href="/threads/all">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <form class="d-flex" role="logout" action="/users/logout">
+                <button class="btn btn-danger" type="submit">Log Out</button>
+              </form>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
+    <h2 class="text-center mt-3">All Threads</h2>
+    <table class="table w-75 text-center mx-auto my-5">
+      <thead>
+        <tr>
+          <th scope="col">Thread Title</th>
+          <th scope="col">Thread Author</th>
+          <th scope="col">Thread Created At</th>
+          <th scope="col">Thread Updated At</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for thread in threads %}
+        <tr>
+          <td>{{ thread.title }}</td>
+          <td>{{ thread.user.username }}</td>
+          <td>{{ thread.created_at }}</td>
+          <td>{{ thread.updated_at }}</td>
+          <td>
+            <a class="btn btn-primary" href="/threads/{{ thread.id }}">View</a>
+            {% if session["user_id"] == thread.user_id %}
+            <a class="btn btn-warning" href="/threads/{{ thread.id }}/edit">Edit</a>
+            <form class="d-inline" action="/threads/{{ thread.id }}/delete" method="post">
+              <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
