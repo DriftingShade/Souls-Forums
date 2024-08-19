@@ -2,6 +2,7 @@ from flask_app import app
 from flask_app.models.thread import Thread
 from flask_app.models.user import User
 from datetime import datetime
+from flask_app.models.comment import Comment
 from flask import flash, render_template, redirect, request, session
 
 
@@ -52,10 +53,11 @@ def thread_details(thread_id):
         flash("Please log in.", "login")
         return redirect("/")
 
+    comments = Comment.all_comments(thread_id)
     thread = Thread.find_by_id_with_user(thread_id)
     user = User.find_by_id(session["user_id"])
 
-    return render_template("thread_details.html", user=user, thread=thread)
+    return render_template("thread_details.html", user=user, thread=thread, comments=comments)
 
 
 @app.get("/threads/<int:thread_id>/edit")
